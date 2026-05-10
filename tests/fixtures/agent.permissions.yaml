@@ -1,0 +1,39 @@
+version: "0.1"
+agent:
+  name: code-review-agent
+  owner: security@example.com
+  purpose: Review pull requests and leave comments
+  risk_tier: medium
+tools:
+  allow:
+    - github.pull_request.read
+    - github.pull_request.comment
+    - github.pull_request.merge
+  deny:
+    - github.repo.delete
+  require_approval:
+    - github.pull_request.merge
+files:
+  allow_read:
+    - src/**
+    - package.json
+  allow_write:
+    - reports/**
+  deny:
+    - .env
+    - "**/.ssh/**"
+models:
+  allow:
+    - gpt-4o
+    - claude-*
+  deny:
+    - experimental-*
+budgets:
+  max_cost_usd_per_run: 5
+  max_tool_calls_per_run: 50
+data:
+  allow_exfiltration_to:
+    - github.com/David-Wu1119/*
+  deny_exfiltration_to:
+    - webhook.site
+  redact_secrets: true
